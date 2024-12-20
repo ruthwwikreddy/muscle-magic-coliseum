@@ -47,7 +47,7 @@ const MembershipSection = () => {
                 plan.popular
                   ? "bg-muscle-red text-white"
                   : "bg-white text-black"
-              } relative`}
+              } relative transform hover:scale-105 transition-transform duration-300 shadow-xl`}
             >
               {plan.popular && (
                 <span className="absolute top-0 right-0 bg-yellow-400 text-black text-sm font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">

@@ -1,12 +1,32 @@
-import { Facebook, Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Youtube, MapPin } from "lucide-react";
 
 const Footer = () => {
   const socialLinks = [
-    { icon: Facebook, href: "#" },
-    { icon: Instagram, href: "#" },
-    { icon: Twitter, href: "#" },
-    { icon: Youtube, href: "#" },
-    { icon: Linkedin, href: "#" },
+    { 
+      icon: Instagram, 
+      href: "https://www.instagram.com/muscle_works_the_fitness/p/C86XWIspgQu/",
+      label: "Instagram"
+    },
+    { 
+      icon: Facebook, 
+      href: "https://www.facebook.com/people/Muscle-Works-The-Fitness-Coliseum/61560460897988/",
+      label: "Facebook"
+    },
+    { 
+      icon: Youtube, 
+      href: "http://www.youtube.com/@MWthefitnesscoliseum",
+      label: "YouTube"
+    },
+    { 
+      icon: Linkedin, 
+      href: "https://www.linkedin.com/company/muscle-works/posts/?feedView=all",
+      label: "LinkedIn"
+    },
+    { 
+      icon: MapPin, 
+      href: "https://maps.app.goo.gl/iQ5DM66kghrAGJe5A",
+      label: "Location"
+    }
   ];
 
   const quickLinks = [
@@ -27,6 +47,14 @@ const Footer = () => {
             <p className="text-gray-400">
               Your ultimate fitness destination in Jubilee Hills.
             </p>
+            <div className="mt-4">
+              <p className="text-gray-400">
+                <span className="font-bold text-white">Phone:</span> +91-9281151518
+              </p>
+              <p className="text-gray-400">
+                <span className="font-bold text-white">Address:</span> Muscle Works - The Fitness Coliseum
+              </p>
+            </div>
           </div>
           
           <div>
@@ -52,7 +80,10 @@ const Footer = () => {
                 <a
                   key={index}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-gray-400 hover:text-white transition-colors"
+                  aria-label={social.label}
                 >
                   <social.icon className="w-6 h-6" />
                 </a>
