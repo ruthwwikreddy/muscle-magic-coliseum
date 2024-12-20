@@ -81,11 +81,37 @@ export default {
             transform: "translateY(0)",
           },
         },
+        "slide-in": {
+          "0%": {
+            opacity: "0",
+            transform: "translateX(-100%)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateX(0)",
+          },
+        },
+        "zoom-in": {
+          "0%": {
+            opacity: "0",
+            transform: "scale(0.95)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "scale(1)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-up": "fade-up 0.5s ease-out forwards",
+        "slide-in": "slide-in 0.5s ease-out forwards",
+        "zoom-in": "zoom-in 0.3s ease-out forwards",
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
     },
   },
