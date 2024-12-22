@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FreeTrialFormData, FreeTrialBooking } from "@/types/free-trial";
+import RegistrationForm from "./free-trial/RegistrationForm";
+import VerificationForm from "./free-trial/VerificationForm";
 
 const FreeTrialSection = () => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FreeTrialFormData>({
     name: "",
     email: "",
     phone: "",
@@ -38,13 +40,10 @@ const FreeTrialSection = () => {
     }
 
     if (!showVerification) {
-      // Generate and send verification code
       const code = generateVerificationCode();
       setGeneratedCode(code);
       setShowVerification(true);
       
-      // In a real application, you would send this code via SMS
-      // For demo purposes, we'll show it in a toast
       toast({
         title: "Verification Code Sent",
         description: `Your verification code is: ${code}`,
@@ -62,13 +61,15 @@ const FreeTrialSection = () => {
     }
 
     try {
-      const { error } = await supabase.from('free_trial_bookings').insert([
-        {
-          ...formData,
-          verification_code: verificationCode,
-          is_verified: true
-        }
-      ]);
+      const booking: FreeTrialBooking = {
+        ...formData,
+        verification_code: verificationCode,
+        is_verified: true
+      };
+
+      const { error } = await supabase
+        .from('free_trial_bookings')
+        .insert([booking]);
 
       if (error) throw error;
 
@@ -125,97 +126,12 @@ const FreeTrialSection = () => {
           
           <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-xl shadow-lg animate-fade-up">
             {!showVerification ? (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-muscle-red focus:border-muscle-red transition-all duration-300 hover:border-muscle-red"
-                    placeholder="Enter your full name"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-muscle-red focus:border-muscle-red transition-all duration-300 hover:border-muscle-red"
-                    placeholder="Enter your email"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number
-                  </label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      required
-                      pattern="[6-9][0-9]{9}"
-                      maxLength={10}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-muscle-red focus:border-muscle-red transition-all duration-300 hover:border-muscle-red"
-                      placeholder="Enter 10-digit mobile number"
-                    />
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">Enter a valid 10-digit Indian mobile number</p>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Gender
-                  </label>
-                  <select
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-muscle-red focus:border-muscle-red transition-all duration-300 hover:border-muscle-red"
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-              </>
+              <RegistrationForm formData={formData} onChange={handleChange} />
             ) : (
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Verify Your Phone Number</h3>
-                <p className="text-sm text-gray-600">
-                  We've sent a verification code to your phone number. Please enter it below.
-                </p>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Verification Code
-                  </label>
-                  <input
-                    type="text"
-                    value={verificationCode}
-                    onChange={(e) => setVerificationCode(e.target.value)}
-                    required
-                    maxLength={4}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-muscle-red focus:border-muscle-red transition-all duration-300 hover:border-muscle-red"
-                    placeholder="Enter 4-digit code"
-                  />
-                </div>
-              </div>
+              <VerificationForm 
+                verificationCode={verificationCode}
+                onVerificationChange={setVerificationCode}
+              />
             )}
             
             <Button 
