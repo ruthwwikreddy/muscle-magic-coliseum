@@ -61,7 +61,7 @@ const FreeTrialSection = () => {
     }
 
     try {
-      const booking: FreeTrialBooking = {
+      const booking: Database['public']['Tables']['free_trial_bookings']['Insert'] = {
         ...formData,
         verification_code: verificationCode,
         is_verified: true
