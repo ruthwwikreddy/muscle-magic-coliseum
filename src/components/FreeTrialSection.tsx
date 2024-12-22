@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { FreeTrialFormData, FreeTrialBooking } from "@/types/free-trial";
+import { FreeTrialFormData } from "@/types/free-trial";
 import RegistrationForm from "./free-trial/RegistrationForm";
 import VerificationForm from "./free-trial/VerificationForm";
 
@@ -17,10 +17,16 @@ const FreeTrialSection = () => {
   const [verificationCode, setVerificationCode] = useState("");
   const [showVerification, setShowVerification] = useState(false);
   const [generatedCode, setGeneratedCode] = useState("");
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   const validatePhoneNumber = (phone: string) => {
     const phoneRegex = /^[6-9]\d{9}$/;
     return phoneRegex.test(phone);
+  };
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   const generateVerificationCode = () => {
@@ -39,14 +45,24 @@ const FreeTrialSection = () => {
       return;
     }
 
+    if (!validateEmail(formData.email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!showVerification) {
       const code = generateVerificationCode();
       setGeneratedCode(code);
       setShowVerification(true);
       
+      // In a production environment, this would send the code via SMS and email
       toast({
-        title: "Verification Code Sent",
-        description: `Your verification code is: ${code}`,
+        title: "Verification Codes Sent",
+        description: `Your verification code is: ${code} (sent to both phone and email)`,
       });
       return;
     }
@@ -61,7 +77,7 @@ const FreeTrialSection = () => {
     }
 
     try {
-      const booking: Database['public']['Tables']['free_trial_bookings']['Insert'] = {
+      const booking = {
         ...formData,
         verification_code: verificationCode,
         is_verified: true
@@ -81,6 +97,7 @@ const FreeTrialSection = () => {
       setFormData({ name: "", email: "", phone: "", gender: "" });
       setVerificationCode("");
       setShowVerification(false);
+      setIsEmailVerified(false);
     } catch (error) {
       toast({
         title: "Error",
