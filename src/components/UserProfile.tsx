@@ -34,7 +34,7 @@ const UserProfile = () => {
         .from('profiles')
         .select('avatar_url')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching profile:', error);
@@ -82,7 +82,7 @@ const UserProfile = () => {
           id: user.id,
           avatar_url: publicUrl,
           updated_at: new Date().toISOString(),
-        });
+        } satisfies Partial<Profile>);
 
       if (updateError) throw updateError;
       
