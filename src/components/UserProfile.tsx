@@ -13,6 +13,7 @@ const UserProfile = () => {
   const { toast } = useToast();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
     getProfile();
@@ -26,6 +27,8 @@ const UserProfile = () => {
         navigate("/auth");
         return;
       }
+
+      setUserEmail(user.email);
 
       const { data, error } = await supabase
         .from('profiles')
@@ -118,7 +121,7 @@ const UserProfile = () => {
         <Avatar className="h-10 w-10">
           <AvatarImage src={avatarUrl || undefined} />
           <AvatarFallback>
-            {supabase.auth.getUser()?.data?.user?.email?.charAt(0).toUpperCase()}
+            {userEmail?.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
         <input
