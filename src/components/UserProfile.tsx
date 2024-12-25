@@ -4,6 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { Database } from "@/integrations/supabase/types";
+
+type Profile = Database['public']['Tables']['profiles']['Row'];
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -76,7 +79,7 @@ const UserProfile = () => {
           id: user.id,
           avatar_url: publicUrl,
           updated_at: new Date().toISOString(),
-        });
+        } as Profile);
 
       if (updateError) throw updateError;
       
