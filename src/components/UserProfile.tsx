@@ -30,6 +30,11 @@ const UserProfile = () => {
         .eq('id', user.id)
         .single();
 
+      if (error) {
+        console.error('Error fetching profile:', error);
+        return;
+      }
+
       if (data) {
         setAvatarUrl(data.avatar_url);
       }
@@ -92,7 +97,15 @@ const UserProfile = () => {
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Error signing out",
+        variant: "destructive",
+      });
+      return;
+    }
     navigate("/auth");
   };
 
