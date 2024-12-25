@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
+import UserProfile from "./UserProfile";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,6 +49,7 @@ const Navbar = () => {
               >
                 Book Free Trial
               </Button>
+              <UserProfile />
             </div>
           </div>
           
@@ -81,6 +83,9 @@ const Navbar = () => {
             >
               Book Free Trial
             </Button>
+            <div className="mt-4 px-3">
+              <UserProfile />
+            </div>
           </div>
         </div>
       )}
