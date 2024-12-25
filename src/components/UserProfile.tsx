@@ -81,7 +81,6 @@ const UserProfile = () => {
         .upsert({
           id: user.id,
           avatar_url: publicUrl,
-          updated_at: new Date().toISOString(),
         } satisfies Partial<Profile>);
 
       if (updateError) throw updateError;
