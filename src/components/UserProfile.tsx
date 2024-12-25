@@ -82,7 +82,7 @@ const UserProfile = () => {
           id: user.id,
           avatar_url: publicUrl,
           updated_at: new Date().toISOString(),
-        } as Profile);
+        });
 
       if (updateError) throw updateError;
       
