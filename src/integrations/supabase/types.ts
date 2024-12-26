@@ -15,30 +15,45 @@ export type Database = {
           email: string
           gender: string
           id: string
-          is_verified: boolean | null
           name: string
           phone: string
-          verification_code: string
         }
         Insert: {
           created_at?: string
           email: string
           gender: string
           id?: string
-          is_verified?: boolean | null
           name: string
           phone: string
-          verification_code: string
         }
         Update: {
           created_at?: string
           email?: string
           gender?: string
           id?: string
-          is_verified?: boolean | null
           name?: string
           phone?: string
-          verification_code?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          username?: string | null
         }
         Relationships: []
       }

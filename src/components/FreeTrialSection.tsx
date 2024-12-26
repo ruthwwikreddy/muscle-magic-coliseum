@@ -5,6 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { FreeTrialFormData } from "@/types/free-trial";
 import RegistrationForm from "./free-trial/RegistrationForm";
 import VerificationForm from "./free-trial/VerificationForm";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { Upload } from "lucide-react";
 
 const FreeTrialSection = () => {
   const { toast } = useToast();
@@ -18,6 +21,9 @@ const FreeTrialSection = () => {
   const [showVerification, setShowVerification] = useState(false);
   const [generatedCode, setGeneratedCode] = useState("");
   const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [showAuth, setShowAuth] = useState(false);
 
   const validatePhoneNumber = (phone: string) => {
     const phoneRegex = /^[6-9]\d{9}$/;
@@ -31,6 +37,15 @@ const FreeTrialSection = () => {
 
   const generateVerificationCode = () => {
     return Math.floor(1000 + Math.random() * 9000).toString();
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      const imageUrl = URL.createObjectURL(file);
+      setImageUrl(imageUrl);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,11 +70,17 @@ const FreeTrialSection = () => {
     }
 
     if (!showVerification) {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        setShowAuth(true);
+        return;
+      }
+
       const code = generateVerificationCode();
       setGeneratedCode(code);
       setShowVerification(true);
       
-      // In a production environment, this would send the code via SMS and email
       toast({
         title: "Verification Codes Sent",
         description: `Your verification code is: ${code} (sent to both phone and email)`,
@@ -77,10 +98,24 @@ const FreeTrialSection = () => {
     }
 
     try {
+      let imagePath = null;
+      if (selectedImage) {
+        const fileExt = selectedImage.name.split('.').pop();
+        const filePath = `${Math.random()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('free-trial-images')
+          .upload(filePath, selectedImage);
+
+        if (uploadError) throw uploadError;
+        imagePath = filePath;
+      }
+
       const booking = {
         ...formData,
         verification_code: verificationCode,
-        is_verified: true
+        is_verified: true,
+        image_url: imagePath
       };
 
       const { error } = await supabase
@@ -98,6 +133,8 @@ const FreeTrialSection = () => {
       setVerificationCode("");
       setShowVerification(false);
       setIsEmailVerified(false);
+      setSelectedImage(null);
+      setImageUrl(null);
     } catch (error) {
       toast({
         title: "Error",
@@ -110,6 +147,20 @@ const FreeTrialSection = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  if (showAuth) {
+    return (
+      <div className="max-w-md mx-auto p-8 bg-white rounded-lg shadow-lg">
+        <h2 className="text-2xl font-bold mb-6 text-center">Please Sign In to Continue</h2>
+        <Auth
+          supabaseClient={supabase}
+          appearance={{ theme: ThemeSupa }}
+          providers={[]}
+          onlyThirdPartyProviders={false}
+        />
+      </div>
+    );
+  }
 
   return (
     <section className="py-20 bg-gradient-to-b from-white to-gray-50" id="free-trial">
@@ -134,16 +185,51 @@ const FreeTrialSection = () => {
                 Join Exciting Group Classes
               </li>
             </ul>
-            <img
-              src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-              alt="Trainer with client"
-              className="rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 animate-fade-up"
-            />
+            {imageUrl ? (
+              <img
+                src={imageUrl}
+                alt="Selected preview"
+                className="rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 animate-fade-up"
+              />
+            ) : (
+              <img
+                src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                alt="Trainer with client"
+                className="rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 animate-fade-up"
+              />
+            )}
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-xl shadow-lg animate-fade-up">
             {!showVerification ? (
-              <RegistrationForm formData={formData} onChange={handleChange} />
+              <>
+                <RegistrationForm formData={formData} onChange={handleChange} />
+                <div className="space-y-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Upload Your Photo
+                  </label>
+                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-muscle-red transition-colors">
+                    <div className="space-y-1 text-center">
+                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                      <div className="flex text-sm text-gray-600">
+                        <label htmlFor="file-upload" className="relative cursor-pointer rounded-md font-medium text-muscle-red hover:text-muscle-red/90">
+                          <span>Upload a file</span>
+                          <input
+                            id="file-upload"
+                            name="file-upload"
+                            type="file"
+                            className="sr-only"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                          />
+                        </label>
+                        <p className="pl-1">or drag and drop</p>
+                      </div>
+                      <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                    </div>
+                  </div>
+                </div>
+              </>
             ) : (
               <VerificationForm 
                 verificationCode={verificationCode}
