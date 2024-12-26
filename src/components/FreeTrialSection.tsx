@@ -5,10 +5,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { FreeTrialFormData } from "@/types/free-trial";
 import RegistrationForm from "./free-trial/RegistrationForm";
 import VerificationForm from "./free-trial/VerificationForm";
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
-import ImageUpload from "./free-trial/ImageUpload";
-import FreeTrialInfo from "./free-trial/FreeTrialInfo";
 
 const FreeTrialSection = () => {
   const { toast } = useToast();
@@ -21,9 +17,7 @@ const FreeTrialSection = () => {
   const [verificationCode, setVerificationCode] = useState("");
   const [showVerification, setShowVerification] = useState(false);
   const [generatedCode, setGeneratedCode] = useState("");
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [showAuth, setShowAuth] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   const validatePhoneNumber = (phone: string) => {
     const phoneRegex = /^[6-9]\d{9}$/;
@@ -37,15 +31,6 @@ const FreeTrialSection = () => {
 
   const generateVerificationCode = () => {
     return Math.floor(1000 + Math.random() * 9000).toString();
-  };
-
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-      const imageUrl = URL.createObjectURL(file);
-      setImageUrl(imageUrl);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,19 +55,13 @@ const FreeTrialSection = () => {
     }
 
     if (!showVerification) {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        setShowAuth(true);
-        return;
-      }
-
       const code = generateVerificationCode();
       setGeneratedCode(code);
       setShowVerification(true);
       
+      // In a production environment, this would send the code via SMS and email
       toast({
-        title: "Verification Code Sent",
+        title: "Verification Codes Sent",
         description: `Your verification code is: ${code} (sent to both phone and email)`,
       });
       return;
@@ -98,24 +77,10 @@ const FreeTrialSection = () => {
     }
 
     try {
-      let imagePath = null;
-      if (selectedImage) {
-        const fileExt = selectedImage.name.split('.').pop();
-        const filePath = `${Math.random()}.${fileExt}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from('free-trial-images')
-          .upload(filePath, selectedImage);
-
-        if (uploadError) throw uploadError;
-        imagePath = filePath;
-      }
-
       const booking = {
         ...formData,
         verification_code: verificationCode,
-        is_verified: true,
-        image_url: imagePath
+        is_verified: true
       };
 
       const { error } = await supabase
@@ -132,8 +97,7 @@ const FreeTrialSection = () => {
       setFormData({ name: "", email: "", phone: "", gender: "" });
       setVerificationCode("");
       setShowVerification(false);
-      setSelectedImage(null);
-      setImageUrl(null);
+      setIsEmailVerified(false);
     } catch (error) {
       toast({
         title: "Error",
@@ -147,35 +111,39 @@ const FreeTrialSection = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  if (showAuth) {
-    return (
-      <div className="max-w-md mx-auto p-8 bg-white rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-center">Please Sign In to Continue</h2>
-        <Auth
-          supabaseClient={supabase}
-          appearance={{ theme: ThemeSupa }}
-          providers={[]}
-        />
-      </div>
-    );
-  }
-
   return (
     <section className="py-20 bg-gradient-to-b from-white to-gray-50" id="free-trial">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <FreeTrialInfo />
+          <div className="space-y-6 animate-fade-up">
+            <h2 className="text-4xl font-bold text-black mb-6 relative">
+              Book a Free Two-Day Trial and Experience Our Gym!
+              <span className="absolute bottom-0 left-0 w-20 h-1 bg-muscle-red"></span>
+            </h2>
+            <ul className="space-y-4 mb-8">
+              <li className="flex items-center text-gray-600 hover:text-muscle-red transition-colors">
+                <span className="w-2 h-2 bg-muscle-red rounded-full mr-3"></span>
+                Meet Our Expert Trainers
+              </li>
+              <li className="flex items-center text-gray-600 hover:text-muscle-red transition-colors">
+                <span className="w-2 h-2 bg-muscle-red rounded-full mr-3"></span>
+                Explore Our State-of-the-Art Facilities
+              </li>
+              <li className="flex items-center text-gray-600 hover:text-muscle-red transition-colors">
+                <span className="w-2 h-2 bg-muscle-red rounded-full mr-3"></span>
+                Join Exciting Group Classes
+              </li>
+            </ul>
+            <img
+              src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+              alt="Trainer with client"
+              className="rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 animate-fade-up"
+            />
+          </div>
           
           <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-xl shadow-lg animate-fade-up">
             {!showVerification ? (
-              <>
-                <RegistrationForm formData={formData} onChange={handleChange} />
-                <ImageUpload
-                  imageUrl={imageUrl}
-                  selectedImage={selectedImage}
-                  onImageChange={handleImageChange}
-                />
-              </>
+              <RegistrationForm formData={formData} onChange={handleChange} />
             ) : (
               <VerificationForm 
                 verificationCode={verificationCode}

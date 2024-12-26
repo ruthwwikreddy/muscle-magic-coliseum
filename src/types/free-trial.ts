@@ -10,7 +10,6 @@ export interface FreeTrialBooking extends FreeTrialFormData {
   is_verified: boolean | null;
   created_at?: string;
   id?: string;
-  image_url?: string | null;
 }
 
 // Add Database types for Supabase
@@ -35,7 +34,6 @@ export interface Database {
           name: string
           phone: string
           verification_code: string
-          image_url: string | null
         }
         Insert: {
           created_at?: string
@@ -46,7 +44,6 @@ export interface Database {
           name: string
           phone: string
           verification_code: string
-          image_url?: string | null
         }
         Update: {
           created_at?: string
@@ -57,7 +54,6 @@ export interface Database {
           name?: string
           phone?: string
           verification_code?: string
-          image_url?: string | null
         }
         Relationships: []
       }
