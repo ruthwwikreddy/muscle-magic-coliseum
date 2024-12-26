@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Phone } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const FreeTrialSection = () => {
   const { toast } = useToast();
@@ -11,13 +12,14 @@ const FreeTrialSection = () => {
     phone: "",
     gender: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validatePhoneNumber = (phone: string) => {
     const phoneRegex = /^[6-9]\d{9}$/;
     return phoneRegex.test(phone);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validatePhoneNumber(formData.phone)) {
@@ -29,11 +31,38 @@ const FreeTrialSection = () => {
       return;
     }
 
-    toast({
-      title: "Free Trial Booked!",
-      description: "We'll contact you shortly to confirm your trial session.",
-    });
-    setFormData({ name: "", email: "", phone: "", gender: "" });
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase
+        .from('free_trial_bookings')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            gender: formData.gender,
+          }
+        ]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Free Trial Booked!",
+        description: "We'll contact you shortly to confirm your trial session.",
+      });
+      
+      setFormData({ name: "", email: "", phone: "", gender: "" });
+    } catch (error) {
+      console.error('Error booking free trial:', error);
+      toast({
+        title: "Booking Failed",
+        description: "There was an error booking your free trial. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -143,8 +172,9 @@ const FreeTrialSection = () => {
             <Button 
               type="submit" 
               className="w-full bg-muscle-red hover:bg-muscle-red/90 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+              disabled={isSubmitting}
             >
-              Schedule Your Free Trial Now
+              {isSubmitting ? "Scheduling..." : "Schedule Your Free Trial Now"}
             </Button>
           </form>
         </div>
