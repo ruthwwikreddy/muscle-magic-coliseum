@@ -7,7 +7,8 @@ import RegistrationForm from "./free-trial/RegistrationForm";
 import VerificationForm from "./free-trial/VerificationForm";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { Upload } from "lucide-react";
+import ImageUpload from "./free-trial/ImageUpload";
+import FreeTrialInfo from "./free-trial/FreeTrialInfo";
 
 const FreeTrialSection = () => {
   const { toast } = useToast();
@@ -20,7 +21,6 @@ const FreeTrialSection = () => {
   const [verificationCode, setVerificationCode] = useState("");
   const [showVerification, setShowVerification] = useState(false);
   const [generatedCode, setGeneratedCode] = useState("");
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [showAuth, setShowAuth] = useState(false);
@@ -82,7 +82,7 @@ const FreeTrialSection = () => {
       setShowVerification(true);
       
       toast({
-        title: "Verification Codes Sent",
+        title: "Verification Code Sent",
         description: `Your verification code is: ${code} (sent to both phone and email)`,
       });
       return;
@@ -132,7 +132,6 @@ const FreeTrialSection = () => {
       setFormData({ name: "", email: "", phone: "", gender: "" });
       setVerificationCode("");
       setShowVerification(false);
-      setIsEmailVerified(false);
       setSelectedImage(null);
       setImageUrl(null);
     } catch (error) {
@@ -156,7 +155,6 @@ const FreeTrialSection = () => {
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
           providers={[]}
-          onlyThirdPartyProviders={false}
         />
       </div>
     );
@@ -166,69 +164,17 @@ const FreeTrialSection = () => {
     <section className="py-20 bg-gradient-to-b from-white to-gray-50" id="free-trial">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6 animate-fade-up">
-            <h2 className="text-4xl font-bold text-black mb-6 relative">
-              Book a Free Two-Day Trial and Experience Our Gym!
-              <span className="absolute bottom-0 left-0 w-20 h-1 bg-muscle-red"></span>
-            </h2>
-            <ul className="space-y-4 mb-8">
-              <li className="flex items-center text-gray-600 hover:text-muscle-red transition-colors">
-                <span className="w-2 h-2 bg-muscle-red rounded-full mr-3"></span>
-                Meet Our Expert Trainers
-              </li>
-              <li className="flex items-center text-gray-600 hover:text-muscle-red transition-colors">
-                <span className="w-2 h-2 bg-muscle-red rounded-full mr-3"></span>
-                Explore Our State-of-the-Art Facilities
-              </li>
-              <li className="flex items-center text-gray-600 hover:text-muscle-red transition-colors">
-                <span className="w-2 h-2 bg-muscle-red rounded-full mr-3"></span>
-                Join Exciting Group Classes
-              </li>
-            </ul>
-            {imageUrl ? (
-              <img
-                src={imageUrl}
-                alt="Selected preview"
-                className="rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 animate-fade-up"
-              />
-            ) : (
-              <img
-                src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                alt="Trainer with client"
-                className="rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 animate-fade-up"
-              />
-            )}
-          </div>
+          <FreeTrialInfo />
           
           <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-xl shadow-lg animate-fade-up">
             {!showVerification ? (
               <>
                 <RegistrationForm formData={formData} onChange={handleChange} />
-                <div className="space-y-4">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Upload Your Photo
-                  </label>
-                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-muscle-red transition-colors">
-                    <div className="space-y-1 text-center">
-                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                      <div className="flex text-sm text-gray-600">
-                        <label htmlFor="file-upload" className="relative cursor-pointer rounded-md font-medium text-muscle-red hover:text-muscle-red/90">
-                          <span>Upload a file</span>
-                          <input
-                            id="file-upload"
-                            name="file-upload"
-                            type="file"
-                            className="sr-only"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                          />
-                        </label>
-                        <p className="pl-1">or drag and drop</p>
-                      </div>
-                      <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                    </div>
-                  </div>
-                </div>
+                <ImageUpload
+                  imageUrl={imageUrl}
+                  selectedImage={selectedImage}
+                  onImageChange={handleImageChange}
+                />
               </>
             ) : (
               <VerificationForm 
