@@ -1,39 +1,23 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { FreeTrialFormData } from "@/types/free-trial";
-import RegistrationForm from "./free-trial/RegistrationForm";
-import VerificationForm from "./free-trial/VerificationForm";
+import { Phone } from "lucide-react";
 
 const FreeTrialSection = () => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState<FreeTrialFormData>({
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     gender: "",
   });
-  const [verificationCode, setVerificationCode] = useState("");
-  const [showVerification, setShowVerification] = useState(false);
-  const [generatedCode, setGeneratedCode] = useState("");
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   const validatePhoneNumber = (phone: string) => {
     const phoneRegex = /^[6-9]\d{9}$/;
     return phoneRegex.test(phone);
   };
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const generateVerificationCode = () => {
-    return Math.floor(1000 + Math.random() * 9000).toString();
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validatePhoneNumber(formData.phone)) {
@@ -45,66 +29,11 @@ const FreeTrialSection = () => {
       return;
     }
 
-    if (!validateEmail(formData.email)) {
-      toast({
-        title: "Invalid Email",
-        description: "Please enter a valid email address",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!showVerification) {
-      const code = generateVerificationCode();
-      setGeneratedCode(code);
-      setShowVerification(true);
-      
-      // In a production environment, this would send the code via SMS and email
-      toast({
-        title: "Verification Codes Sent",
-        description: `Your verification code is: ${code} (sent to both phone and email)`,
-      });
-      return;
-    }
-
-    if (verificationCode !== generatedCode) {
-      toast({
-        title: "Invalid Code",
-        description: "Please enter the correct verification code",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const booking = {
-        ...formData,
-        verification_code: verificationCode,
-        is_verified: true
-      };
-
-      const { error } = await supabase
-        .from('free_trial_bookings')
-        .insert([booking]);
-
-      if (error) throw error;
-
-      toast({
-        title: "Free Trial Booked!",
-        description: "We'll contact you shortly to confirm your trial session.",
-      });
-      
-      setFormData({ name: "", email: "", phone: "", gender: "" });
-      setVerificationCode("");
-      setShowVerification(false);
-      setIsEmailVerified(false);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to book your trial. Please try again.",
-        variant: "destructive",
-      });
-    }
+    toast({
+      title: "Free Trial Booked!",
+      description: "We'll contact you shortly to confirm your trial session.",
+    });
+    setFormData({ name: "", email: "", phone: "", gender: "" });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -142,20 +71,80 @@ const FreeTrialSection = () => {
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-xl shadow-lg animate-fade-up">
-            {!showVerification ? (
-              <RegistrationForm formData={formData} onChange={handleChange} />
-            ) : (
-              <VerificationForm 
-                verificationCode={verificationCode}
-                onVerificationChange={setVerificationCode}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-muscle-red focus:border-muscle-red transition-all duration-300 hover:border-muscle-red"
+                placeholder="Enter your full name"
               />
-            )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-muscle-red focus:border-muscle-red transition-all duration-300 hover:border-muscle-red"
+                placeholder="Enter your email"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Phone Number
+              </label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                  pattern="[6-9][0-9]{9}"
+                  maxLength={10}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-muscle-red focus:border-muscle-red transition-all duration-300 hover:border-muscle-red"
+                  placeholder="Enter 10-digit mobile number"
+                />
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Enter a valid 10-digit Indian mobile number</p>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Gender
+              </label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-muscle-red focus:border-muscle-red transition-all duration-300 hover:border-muscle-red"
+              >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
             
             <Button 
               type="submit" 
               className="w-full bg-muscle-red hover:bg-muscle-red/90 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
-              {showVerification ? "Verify & Book Trial" : "Get Verification Code"}
+              Schedule Your Free Trial Now
             </Button>
           </form>
         </div>
