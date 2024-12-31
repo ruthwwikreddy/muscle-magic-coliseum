@@ -22,7 +22,7 @@ serve(async (req) => {
       model: 'google/flan-t5-large',
       inputs: `As a professional fitness trainer, create a detailed workout plan based on these goals: ${prompt}\n\nWorkout Plan:`,
       parameters: {
-        max_new_tokens: 500,
+        max_new_tokens: 250,
         temperature: 0.7,
         top_p: 0.95,
         repetition_penalty: 1.15,
