@@ -22,13 +22,13 @@ const TransformSection = () => {
           
           <div className="grid grid-cols-2 gap-4">
             <img
-              src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-              alt="Training"
+              src="/lovable-uploads/27bb4f31-7e63-4ec2-abc4-5abb56eff352.png"
+              alt="Gym Interior"
               className="rounded-lg w-full h-64 object-cover"
             />
             <img
-              src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-              alt="Results"
+              src="/lovable-uploads/f0caea99-66c8-437c-a002-8aa7527e23d5.png"
+              alt="Training Session"
               className="rounded-lg w-full h-64 object-cover mt-8"
             />
           </div>

@@ -18,6 +18,11 @@ const Hero = () => {
       <div className="absolute inset-0 hero-gradient" />
       
       <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
+        <img 
+          src="/lovable-uploads/d902d0f3-2418-41fb-a6ff-38e04f540be6.png"
+          alt="Muscle Works Logo"
+          className="w-48 h-auto mx-auto mb-8 animate-fade-up"
+        />
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-8 animate-fade-up">
           Reach Your Fitness Goals Faster with{" "}
           <span className="text-muscle-red">Expert Personal Training!</span>
