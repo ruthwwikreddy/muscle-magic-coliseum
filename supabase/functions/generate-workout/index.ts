@@ -7,6 +7,7 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -15,23 +16,37 @@ serve(async (req) => {
     const { prompt } = await req.json()
     const hf = new HfInference(Deno.env.get('HUGGING_FACE_ACCESS_TOKEN'))
     
+    console.log('Generating workout plan for prompt:', prompt)
+    
     const response = await hf.textGeneration({
-      model: 'OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5',
-      inputs: `Generate a personalized workout plan: ${prompt}`,
+      model: 'tiiuae/falcon-7b',  // Using a faster and more reliable model
+      inputs: `Generate a detailed workout plan based on these goals: ${prompt}\n\nWorkout Plan:`,
       parameters: {
         max_new_tokens: 250,
-        temperature: 0.7
+        temperature: 0.7,
+        top_p: 0.95,
+        repetition_penalty: 1.15
       }
     })
+
+    console.log('Successfully generated workout plan')
 
     return new Response(
       JSON.stringify({ workout: response.generated_text }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
+    console.error('Error generating workout:', error)
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      JSON.stringify({ 
+        error: 'Failed to generate workout plan. Please try again.',
+        details: error.message 
+      }),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500
+      }
     )
   }
 })
