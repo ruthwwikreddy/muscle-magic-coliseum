@@ -18,12 +18,22 @@ serve(async (req) => {
     
     console.log('Generating workout plan for prompt:', prompt)
     
+    const systemPrompt = `Create a detailed 4-week workout plan that includes:
+    1. Weekly schedule with specific exercises
+    2. Sets and reps for each exercise
+    3. Rest periods
+    4. Progressive overload strategy
+    Based on these fitness goals: ${prompt}
+
+    Format the response as a structured workout plan with clear sections.
+    Workout Plan:`
+
     const response = await hf.textGeneration({
       model: 'google/flan-t5-large',
-      inputs: `As a professional fitness trainer, create a detailed workout plan based on these goals: ${prompt}\n\nWorkout Plan:`,
+      inputs: systemPrompt,
       parameters: {
         max_new_tokens: 250,
-        temperature: 0.7,
+        temperature: 0.8,
         top_p: 0.95,
         repetition_penalty: 1.15
       }
