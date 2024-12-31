@@ -25,8 +25,7 @@ serve(async (req) => {
         max_new_tokens: 250,
         temperature: 0.7,
         top_p: 0.95,
-        repetition_penalty: 1.15,
-        timeout: 30000
+        repetition_penalty: 1.15
       }
     })
 
