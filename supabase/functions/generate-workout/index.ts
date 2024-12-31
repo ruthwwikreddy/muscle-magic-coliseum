@@ -20,12 +20,13 @@ serve(async (req) => {
     
     const response = await hf.textGeneration({
       model: 'tiiuae/falcon-7b',  // Using a faster and more reliable model
-      inputs: `Generate a detailed workout plan based on these goals: ${prompt}\n\nWorkout Plan:`,
+      inputs: `As a professional fitness trainer, create a detailed workout plan based on these goals: ${prompt}\n\nWorkout Plan:`,
       parameters: {
-        max_new_tokens: 250,
+        max_new_tokens: 500,  // Increased token limit for more detailed responses
         temperature: 0.7,
         top_p: 0.95,
-        repetition_penalty: 1.15
+        repetition_penalty: 1.15,
+        timeout: 30000  // 30 second timeout
       }
     })
 
