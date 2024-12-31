@@ -7,6 +7,7 @@ import MembershipSection from "@/components/MembershipSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import GallerySection from "@/components/GallerySection";
 
 const Index = () => {
   return (
@@ -15,6 +16,7 @@ const Index = () => {
       <Hero />
       <TransformSection />
       <ServicesSection />
+      <GallerySection />
       <FreeTrialSection />
       <MembershipSection />
       <TestimonialsSection />
