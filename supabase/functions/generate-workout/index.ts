@@ -27,18 +27,42 @@ serve(async (req) => {
 
     if (!response.ok) {
       console.error('Wger API Error Status:', response.status);
+      const errorText = await response.text();
+      console.error('Wger API Error Response:', errorText);
       throw new Error('Failed to fetch workout plans');
     }
 
     const data = await response.json();
-    console.log('Successfully fetched workouts. Count:', data.count);
+    console.log('Raw API Response:', JSON.stringify(data));
 
-    if (!data.results || !Array.isArray(data.results) || data.results.length === 0) {
-      throw new Error('No workout data available');
-    }
+    // Create a default workout template since the API might not provide enough structure
+    const defaultWorkouts = [
+      {
+        name: 'Full Body Workout',
+        description: 'Focus on compound exercises targeting all major muscle groups',
+        type: 'strength'
+      },
+      {
+        name: 'Cardio Session',
+        description: 'Mix of high-intensity intervals and steady-state cardio',
+        type: 'cardio'
+      },
+      {
+        name: 'Recovery and Flexibility',
+        description: 'Light stretching and mobility work',
+        type: 'recovery'
+      }
+    ];
+
+    // Use API data if available, otherwise fall back to default workouts
+    const workouts = (data.results && Array.isArray(data.results) && data.results.length > 0)
+      ? data.results
+      : defaultWorkouts;
+
+    console.log('Processing workouts:', workouts.length);
 
     // Process the workouts and create a structured plan
-    const workoutPlan = processWorkouts(data.results, prompt);
+    const workoutPlan = processWorkouts(workouts, prompt);
 
     return new Response(
       JSON.stringify({ workout: workoutPlan }),
@@ -72,10 +96,20 @@ function processWorkouts(workouts: any[], userGoals: string): string {
   days.forEach((day, index) => {
     const workout = workouts[index % workouts.length];
     plan += `${day}:\n`;
-    // Safely access workout properties with fallbacks
-    plan += `- Workout: ${workout?.name || 'Rest Day'}\n`;
-    plan += `- Description: ${workout?.description || 'Take time to recover and stretch'}\n`;
-    plan += `- Creation Date: ${workout?.creation_date ? new Date(workout.creation_date).toLocaleDateString() : 'N/A'}\n\n`;
+    
+    // Safely access workout properties with detailed fallbacks based on the day
+    if (index % 3 === 0) {
+      plan += `- Workout: ${workout?.name || 'Strength Training'}\n`;
+      plan += `- Description: ${workout?.description || 'Focus on compound exercises: squats, deadlifts, bench press, rows'}\n`;
+    } else if (index % 3 === 1) {
+      plan += `- Workout: ${workout?.name || 'Cardio Session'}\n`;
+      plan += `- Description: ${workout?.description || '30 minutes of cardio combining HIIT and steady-state training'}\n`;
+    } else {
+      plan += `- Workout: ${workout?.name || 'Recovery Day'}\n`;
+      plan += `- Description: ${workout?.description || 'Light stretching, mobility work, and active recovery'}\n`;
+    }
+    
+    plan += `- Focus: ${workout?.type || (index % 2 === 0 ? 'Strength' : 'Cardio/Recovery')}\n\n`;
   });
 
   plan += "\nNotes:\n";
