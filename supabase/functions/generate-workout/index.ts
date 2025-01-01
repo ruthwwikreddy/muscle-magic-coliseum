@@ -18,9 +18,21 @@ serve(async (req) => {
     
     console.log('Generating workout plan for prompt:', prompt)
     
+    const systemPrompt = `Create a detailed 7-day workout plan with specific exercises, sets, and reps. Format:
+
+Day 1: [Focus Area]
+- Exercise 1: [Sets] x [Reps]
+- Exercise 2: [Sets] x [Reps]
+(etc.)
+
+Rest between sets: [Time]
+Notes: [Important form tips]
+
+Based on these goals: ${prompt}\n\nWorkout Plan:`
+
     const response = await hf.textGeneration({
-      model: 'tiiuae/falcon-7b',  // Using a faster and more reliable model
-      inputs: `Generate a detailed workout plan based on these goals: ${prompt}\n\nWorkout Plan:`,
+      model: 'tiiuae/falcon-7b',
+      inputs: systemPrompt,
       parameters: {
         max_new_tokens: 250,
         temperature: 0.7,
