@@ -1,12 +1,11 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const WGER_API_TOKEN = '2cc59dab843249be079aa21f30944afb0383f496';
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -16,65 +15,70 @@ serve(async (req) => {
 
   try {
     const { prompt } = await req.json();
-    console.log('Generating workout plan for prompt:', prompt);
+    console.log('Fetching workout plans, user goals:', prompt);
 
-    const systemPrompt = `You are a professional fitness trainer. Create a detailed 7-day workout plan based on the user's goals. 
-    For each day, specify:
-    1. The focus area
-    2. 4-6 exercises with specific sets and reps
-    3. Rest periods between sets
-    4. Important form tips
-    
-    Format the response clearly with Day headers and bullet points for exercises.`;
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
+    // Fetch workouts from wger API
+    const response = await fetch('https://wger.de/api/v2/workout/', {
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
+        'Authorization': `Token ${WGER_API_TOKEN}`,
+        'Accept': 'application/json',
       },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: `Create a workout plan for someone with these goals: ${prompt}` }
-        ],
-        temperature: 0.7,
-        max_tokens: 1000,
-      }),
     });
 
     if (!response.ok) {
       const error = await response.json();
-      console.error('OpenAI API Error:', error);
-      throw new Error(error.error?.message || 'Failed to generate workout plan');
+      console.error('Wger API Error:', error);
+      throw new Error('Failed to fetch workout plans');
     }
 
     const data = await response.json();
-    const workout = data.choices[0].message.content;
-    console.log('Successfully generated workout plan');
+    console.log('Successfully fetched workouts:', data);
+
+    // Process the workouts and create a structured plan
+    const workoutPlan = processWorkouts(data.results, prompt);
 
     return new Response(
-      JSON.stringify({ workout }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ workout: workoutPlan }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
     );
+
   } catch (error) {
     console.error('Error generating workout:', error);
     
-    let errorMessage = 'Failed to generate workout plan. Please try again.';
-    if (error.message?.includes('quota')) {
-      errorMessage = 'API quota exceeded. Please try again later or contact support.';
-    }
-    
     return new Response(
       JSON.stringify({ 
-        error: errorMessage,
+        error: 'Failed to generate workout plan. Please try again.',
         details: error.message 
       }),
-      { 
+      {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
+        status: 500,
       }
     );
   }
 });
+
+function processWorkouts(workouts: any[], userGoals: string): string {
+  // Create a structured workout plan based on available workouts
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  
+  let plan = `7-Day Workout Plan Based on Your Goals: ${userGoals}\n\n`;
+
+  days.forEach((day, index) => {
+    const workout = workouts[index % workouts.length];
+    plan += `${day}:\n`;
+    plan += `- Workout: ${workout.name || 'Rest Day'}\n`;
+    plan += `- Description: ${workout.description || 'Take time to recover and stretch'}\n`;
+    plan += `- Creation Date: ${new Date(workout.creation_date).toLocaleDateString()}\n\n`;
+  });
+
+  plan += "\nNotes:\n";
+  plan += "- Always warm up before starting your workout\n";
+  plan += "- Stay hydrated throughout your sessions\n";
+  plan += "- Listen to your body and adjust intensity as needed\n";
+  plan += "- Consult with a healthcare professional before starting any new exercise program";
+
+  return plan;
+}
