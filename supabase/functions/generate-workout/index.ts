@@ -26,13 +26,16 @@ serve(async (req) => {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      console.error('Wger API Error:', error);
+      console.error('Wger API Error Status:', response.status);
       throw new Error('Failed to fetch workout plans');
     }
 
     const data = await response.json();
-    console.log('Successfully fetched workouts:', data);
+    console.log('Successfully fetched workouts. Count:', data.count);
+
+    if (!data.results || !Array.isArray(data.results) || data.results.length === 0) {
+      throw new Error('No workout data available');
+    }
 
     // Process the workouts and create a structured plan
     const workoutPlan = processWorkouts(data.results, prompt);
@@ -69,9 +72,10 @@ function processWorkouts(workouts: any[], userGoals: string): string {
   days.forEach((day, index) => {
     const workout = workouts[index % workouts.length];
     plan += `${day}:\n`;
-    plan += `- Workout: ${workout.name || 'Rest Day'}\n`;
-    plan += `- Description: ${workout.description || 'Take time to recover and stretch'}\n`;
-    plan += `- Creation Date: ${new Date(workout.creation_date).toLocaleDateString()}\n\n`;
+    // Safely access workout properties with fallbacks
+    plan += `- Workout: ${workout?.name || 'Rest Day'}\n`;
+    plan += `- Description: ${workout?.description || 'Take time to recover and stretch'}\n`;
+    plan += `- Creation Date: ${workout?.creation_date ? new Date(workout.creation_date).toLocaleDateString() : 'N/A'}\n\n`;
   });
 
   plan += "\nNotes:\n";
