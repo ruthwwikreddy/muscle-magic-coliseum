@@ -45,7 +45,7 @@ Format the response as a structured workout plan with clear sections for each da
       model: 'google/flan-t5-large',
       inputs: systemPrompt,
       parameters: {
-        max_new_tokens: 500,
+        max_new_tokens: 250,
         temperature: 0.7,
         top_p: 0.95,
         repetition_penalty: 1.15
