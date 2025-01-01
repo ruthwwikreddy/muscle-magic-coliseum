@@ -31,7 +31,7 @@ Notes: [Important form tips]
 Based on these goals: ${prompt}\n\nWorkout Plan:`
 
     const response = await hf.textGeneration({
-      model: 'tiiuae/falcon-7b',
+      model: 'google/flan-t5-base',
       inputs: systemPrompt,
       parameters: {
         max_new_tokens: 250,
