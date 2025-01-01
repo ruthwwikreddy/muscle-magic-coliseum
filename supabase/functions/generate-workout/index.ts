@@ -1,54 +1,64 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { HfInference } from 'https://esm.sh/@huggingface/inference@2.3.2'
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+};
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { prompt } = await req.json()
-    const hf = new HfInference(Deno.env.get('HUGGING_FACE_ACCESS_TOKEN'))
+    const { prompt } = await req.json();
     
-    console.log('Generating workout plan for prompt:', prompt)
+    console.log('Generating workout plan for prompt:', prompt);
+
+    const systemPrompt = `You are a professional fitness trainer. Create a detailed 7-day workout plan based on the user's goals. 
+    For each day, specify:
+    1. The focus area
+    2. 4-6 exercises with specific sets and reps
+    3. Rest periods between sets
+    4. Important form tips
     
-    const systemPrompt = `Create a detailed 7-day workout plan with specific exercises, sets, and reps. Format:
+    Format the response clearly with Day headers and bullet points for exercises.`;
 
-Day 1: [Focus Area]
-- Exercise 1: [Sets] x [Reps]
-- Exercise 2: [Sets] x [Reps]
-(etc.)
-
-Rest between sets: [Time]
-Notes: [Important form tips]
-
-Based on these goals: ${prompt}\n\nWorkout Plan:`
-
-    const response = await hf.textGeneration({
-      model: 'google/flan-t5-base',
-      inputs: systemPrompt,
-      parameters: {
-        max_new_tokens: 250,
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: `Create a workout plan for someone with these goals: ${prompt}` }
+        ],
         temperature: 0.7,
-        top_p: 0.95,
-        repetition_penalty: 1.15
-      }
-    })
+        max_tokens: 1000,
+      }),
+    });
 
-    console.log('Successfully generated workout plan')
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.error?.message || 'Failed to generate workout plan');
+    }
+
+    const workout = data.choices[0].message.content;
+    console.log('Successfully generated workout plan');
 
     return new Response(
-      JSON.stringify({ workout: response.generated_text }),
+      JSON.stringify({ workout }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    );
   } catch (error) {
-    console.error('Error generating workout:', error)
+    console.error('Error generating workout:', error);
     
     return new Response(
       JSON.stringify({ 
@@ -59,6 +69,6 @@ Based on these goals: ${prompt}\n\nWorkout Plan:`
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500
       }
-    )
+    );
   }
-})
+});
