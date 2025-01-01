@@ -9,13 +9,13 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const { prompt } = await req.json();
-    
     console.log('Generating workout plan for prompt:', prompt);
 
     const systemPrompt = `You are a professional fitness trainer. Create a detailed 7-day workout plan based on the user's goals. 
@@ -44,12 +44,13 @@ serve(async (req) => {
       }),
     });
 
-    const data = await response.json();
-    
     if (!response.ok) {
-      throw new Error(data.error?.message || 'Failed to generate workout plan');
+      const error = await response.json();
+      console.error('OpenAI API Error:', error);
+      throw new Error(error.error?.message || 'Failed to generate workout plan');
     }
 
+    const data = await response.json();
     const workout = data.choices[0].message.content;
     console.log('Successfully generated workout plan');
 
@@ -60,9 +61,14 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error generating workout:', error);
     
+    let errorMessage = 'Failed to generate workout plan. Please try again.';
+    if (error.message?.includes('quota')) {
+      errorMessage = 'API quota exceeded. Please try again later or contact support.';
+    }
+    
     return new Response(
       JSON.stringify({ 
-        error: 'Failed to generate workout plan. Please try again.',
+        error: errorMessage,
         details: error.message 
       }),
       { 
