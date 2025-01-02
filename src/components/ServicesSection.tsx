@@ -3,7 +3,7 @@ import {
   Users, 
   Heart, 
   Brain, 
-  Running, 
+  RunningMan, 
   Activity, 
   Workflow, 
   Weight, 
@@ -37,7 +37,7 @@ const services = [
   {
     title: "Cardio Workouts",
     description: "Effective cardio sessions to improve endurance and heart health",
-    icon: Running,
+    icon: RunningMan,
   },
   {
     title: "Functional Training",
