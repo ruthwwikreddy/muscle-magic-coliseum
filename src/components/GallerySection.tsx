@@ -57,7 +57,7 @@ const GallerySection = () => {
               className="group relative overflow-hidden rounded-lg cursor-pointer animate-fade-up"
               style={{ 
                 animationDelay: `${index * 150}ms`,
-                height: index === 0 ? 'calc(100% + 2rem)' : 'auto',
+                height: index === 0 ? '400px' : '300px', // Adjusted height
                 gridRow: index === 0 ? 'span 2' : 'auto'
               }}
               onClick={() => setSelectedImage(image.src)}
@@ -65,10 +65,10 @@ const GallerySection = () => {
               <img
                 src={image.src}
                 alt={image.alt}
-                className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <p className="text-white text-center px-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                <p className="text-white text-center px-6 py-4 text-lg font-medium max-w-[80%] transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                   {image.description}
                 </p>
               </div>
