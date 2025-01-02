@@ -22,6 +22,16 @@ const images = [
     src: "/lovable-uploads/b339285f-c186-4645-bfb9-2f09a058fd9c.png",
     alt: "Functional Zone",
     description: "Functional training zone with versatile equipment"
+  },
+  {
+    src: "/lovable-uploads/27bb4f31-7e63-4ec2-abc4-5abb56eff352.png",
+    alt: "Cardio Equipment",
+    description: "Modern cardio equipment for effective workouts"
+  },
+  {
+    src: "/lovable-uploads/f0caea99-66c8-437c-a002-8aa7527e23d5.png",
+    alt: "Weight Training Area",
+    description: "Comprehensive weight training section"
   }
 ];
 
@@ -40,12 +50,16 @@ const GallerySection = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {images.map((image, index) => (
             <div
               key={index}
               className="group relative overflow-hidden rounded-lg cursor-pointer animate-fade-up"
-              style={{ animationDelay: `${index * 150}ms` }}
+              style={{ 
+                animationDelay: `${index * 150}ms`,
+                height: index === 0 ? 'calc(100% + 2rem)' : 'auto',
+                gridRow: index === 0 ? 'span 2' : 'auto'
+              }}
               onClick={() => setSelectedImage(image.src)}
             >
               <img
