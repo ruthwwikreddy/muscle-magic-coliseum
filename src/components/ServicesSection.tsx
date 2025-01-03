@@ -44,7 +44,6 @@ const services = [
     bgColor: "bg-blue-500",
   },
   {
-  {
     title: "Group Classes for All Levels",
     description: "Diverse range of group fitness classes for every fitness level",
     icon: Users,
