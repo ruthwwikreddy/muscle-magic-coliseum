@@ -3,11 +3,8 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const images = [
   "/lovable-uploads/27bb4f31-7e63-4ec2-abc4-5abb56eff352.png",
-  "/lovable-uploads/5919e2c0-8abd-4eb1-97d6-bef1bc4b7452.png",
   "/lovable-uploads/780179fa-f1bd-4c84-9bbd-4507096ae5ce.png",
   "/lovable-uploads/b339285f-c186-4645-bfb9-2f09a058fd9c.png",
-  "/lovable-uploads/d0bec04a-694b-4909-a13e-462913387d33.png",
-  "/lovable-uploads/d902d0f3-2418-41fb-a6ff-38e04f540be6.png",
   "/lovable-uploads/dd687de1-abbc-4090-8743-08782b70f99b.png",
   "/lovable-uploads/f0caea99-66c8-437c-a002-8aa7527e23d5.png",
 ];
