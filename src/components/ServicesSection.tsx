@@ -44,22 +44,11 @@ const services = [
     bgColor: "bg-blue-500",
   },
   {
-    title: "Biggest Gym in Jubilee Hills",
-    description: "Spacious facility with multiple workout zones",
-    icon: Dumbbell,
-    bgColor: "bg-emerald-500",
-  },
   {
     title: "Group Classes for All Levels",
     description: "Diverse range of group fitness classes for every fitness level",
     icon: Users,
     bgColor: "bg-red-500",
-  },
-  {
-    title: "Events and Fitness Challenges",
-    description: "Regular events and challenges to keep you motivated",
-    icon: Activity,
-    bgColor: "bg-purple-500",
   },
 ];
 
