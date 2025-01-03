@@ -9,6 +9,7 @@ import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import GallerySection from "@/components/GallerySection";
 import AIWorkoutSection from "@/components/AIWorkoutSection";
+import BMICalculator from "@/components/BMICalculator";
 
 const Index = () => {
   return (
@@ -17,6 +18,7 @@ const Index = () => {
       <Hero />
       <TransformSection />
       <ServicesSection />
+      <BMICalculator />
       <GallerySection />
       <AIWorkoutSection />
       <FreeTrialSection />
