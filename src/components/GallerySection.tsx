@@ -3,36 +3,11 @@ import { Dialog } from "./ui/dialog";
 import { DialogContent } from "./ui/dialog";
 
 const images = [
-  {
-    src: "/lovable-uploads/dd687de1-abbc-4090-8743-08782b70f99b.png",
-    alt: "Premium Dumbbells",
-    description: "State-of-the-art dumbbell rack with premium equipment"
-  },
-  {
-    src: "/lovable-uploads/d0bec04a-694b-4909-a13e-462913387d33.png",
-    alt: "Power Rack",
-    description: "Professional power rack setup for strength training"
-  },
-  {
-    src: "/lovable-uploads/780179fa-f1bd-4c84-9bbd-4507096ae5ce.png",
-    alt: "Training Area",
-    description: "Spacious training area with modern equipment"
-  },
-  {
-    src: "/lovable-uploads/b339285f-c186-4645-bfb9-2f09a058fd9c.png",
-    alt: "Functional Zone",
-    description: "Functional training zone with versatile equipment"
-  },
-  {
-    src: "/lovable-uploads/27bb4f31-7e63-4ec2-abc4-5abb56eff352.png",
-    alt: "Cardio Equipment",
-    description: "Modern cardio equipment for effective workouts"
-  },
-  {
-    src: "/lovable-uploads/f0caea99-66c8-437c-a002-8aa7527e23d5.png",
-    alt: "Weight Training Area",
-    description: "Comprehensive weight training section"
-  }
+  "/lovable-uploads/27bb4f31-7e63-4ec2-abc4-5abb56eff352.png",
+  "/lovable-uploads/780179fa-f1bd-4c84-9bbd-4507096ae5ce.png",
+  "/lovable-uploads/b339285f-c186-4645-bfb9-2f09a058fd9c.png",
+  "/lovable-uploads/dd687de1-abbc-4090-8743-08782b70f99b.png",
+  "/lovable-uploads/f0caea99-66c8-437c-a002-8aa7527e23d5.png",
 ];
 
 const GallerySection = () => {
