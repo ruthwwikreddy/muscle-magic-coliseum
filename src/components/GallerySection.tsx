@@ -14,55 +14,45 @@ const GallerySection = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
-    <section className="py-20 bg-white" id="gallery">
+    <section className="py-20 bg-black" id="gallery">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 animate-fade-up">
-          <h2 className="text-4xl font-bold text-black mb-4">
-            Our World-Class <span className="text-muscle-red">Facility</span>
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Experience fitness in a premium environment with top-of-the-line equipment
-          </p>
+        <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold text-white mb-4">Our Gallery</h2>
+          <div className="relative">
+            <h3 className="text-4xl font-bold text-white mb-8">
+              Glimpses of Our Fitness Haven
+            </h3>
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-muscle-red"></div>
+          </div>
         </div>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {images.map((image, index) => (
             <div
               key={index}
-              className="group relative overflow-hidden rounded-lg cursor-pointer animate-fade-up"
-              style={{ 
-                animationDelay: `${index * 150}ms`,
-                height: index === 0 ? '400px' : '300px', // Adjusted height
-                gridRow: index === 0 ? 'span 2' : 'auto'
-              }}
-              onClick={() => setSelectedImage(image.src)}
+              className="aspect-square overflow-hidden rounded-lg cursor-pointer transform transition-transform duration-300 hover:scale-105"
+              onClick={() => setSelectedImage(image)}
             >
               <img
-                src={image.src}
-                alt={image.alt}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                src={image}
+                alt={`Gallery image ${index + 1}`}
+                className="w-full h-full object-cover"
+                loading="lazy"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <p className="text-white text-center px-6 py-4 text-lg font-medium max-w-[80%] transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                  {image.description}
-                </p>
-              </div>
             </div>
           ))}
         </div>
-      </div>
 
-      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-        <DialogContent className="max-w-4xl bg-black/90 border-none">
-          {selectedImage && (
+        <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+          <DialogContent className="max-w-4xl bg-black border-none">
             <img
-              src={selectedImage}
-              alt="Gallery Preview"
-              className="w-full h-auto rounded-lg"
+              src={selectedImage || ""}
+              alt="Selected gallery image"
+              className="w-full h-auto"
             />
-          )}
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      </div>
     </section>
   );
 };
