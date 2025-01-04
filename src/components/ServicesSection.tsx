@@ -1,53 +1,59 @@
-import { Dumbbell, Users, Heart, Brain, Activity, Bike } from "lucide-react";
+import { Dumbbell, Users, Heart, Activity, Run, Weight, Laptop, Brain } from "lucide-react";
 
 const services = [
   {
-    title: "Personalized Training Plans",
-    description: "Custom workout plans tailored to your goals and fitness level",
-    icon: Dumbbell,
-    bgColor: "bg-black",
+    title: "Sports-Specific Training",
+    description: "Specialized training programs tailored for your specific sport performance",
+    icon: Run,
+    image: "/lovable-uploads/f3938b12-58fe-4692-9119-459baa4dd348.png",
   },
   {
-    title: "Expert Trainers",
-    description: "Work with certified professionals who guide your fitness journey",
+    title: "Online/Virtual Training",
+    description: "Expert guidance and workouts from anywhere in the world",
+    icon: Laptop,
+    image: "/lovable-uploads/f3938b12-58fe-4692-9119-459baa4dd348.png",
+  },
+  {
+    title: "Personal Training",
+    description: "One-on-one sessions with certified personal trainers",
+    icon: Dumbbell,
+    image: "/lovable-uploads/f3938b12-58fe-4692-9119-459baa4dd348.png",
+  },
+  {
+    title: "GROUP FITNESS CLASSES",
+    description: "High-energy group workouts for all fitness levels",
     icon: Users,
-    bgColor: "bg-black/90",
+    image: "/lovable-uploads/f3938b12-58fe-4692-9119-459baa4dd348.png",
   },
   {
-    title: "State-of-the-Art Equipment",
-    description: "Premium fitness equipment for optimal workout experience",
-    icon: Dumbbell,
-    bgColor: "bg-black/80",
-  },
-  {
-    title: "Nutrition Guidance",
-    description: "Expert advice on diet and nutrition to support your goals",
-    icon: Heart,
-    bgColor: "bg-black",
-  },
-  {
-    title: "Flexible Membership Option",
-    description: "Choose from various membership plans that suit your needs",
+    title: "Cardio Workouts",
+    description: "Effective cardio sessions to boost endurance and burn calories",
     icon: Activity,
-    bgColor: "bg-black/90",
+    image: "/lovable-uploads/f3938b12-58fe-4692-9119-459baa4dd348.png",
   },
   {
-    title: "Wellness Programs",
-    description: "Comprehensive programs for overall health and well-being",
-    icon: Heart,
-    bgColor: "bg-black/80",
+    title: "Functional Training",
+    description: "Build strength and mobility for everyday activities",
+    icon: Weight,
+    image: "/lovable-uploads/f3938b12-58fe-4692-9119-459baa4dd348.png",
   },
   {
-    title: "Sustainability Practices",
-    description: "Eco-friendly approach to fitness and wellness",
-    icon: Brain,
-    bgColor: "bg-black",
-  },
-  {
-    title: "Group Classes for All Levels",
-    description: "Diverse range of group fitness classes for every fitness level",
+    title: "Bodyweight Training",
+    description: "Master your body weight with effective exercises",
     icon: Users,
-    bgColor: "bg-black/90",
+    image: "/lovable-uploads/f3938b12-58fe-4692-9119-459baa4dd348.png",
+  },
+  {
+    title: "Specialized Programs",
+    description: "Custom programs for specific goals and needs",
+    icon: Brain,
+    image: "/lovable-uploads/f3938b12-58fe-4692-9119-459baa4dd348.png",
+  },
+  {
+    title: "Nutrition Coaching",
+    description: "Expert guidance for optimal nutrition and meal planning",
+    icon: Heart,
+    image: "/lovable-uploads/f3938b12-58fe-4692-9119-459baa4dd348.png",
   },
 ];
 
@@ -55,7 +61,7 @@ const ServicesSection = () => {
   return (
     <section className="py-20 bg-gradient-to-b from-black to-black/90" id="services">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 animate-fade-up">
           <h2 className="text-5xl font-bold text-white mb-4">
             We Offer Exclusive Services
           </h2>
@@ -67,18 +73,27 @@ const ServicesSection = () => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
             <div
               key={index}
-              className={`${service.bgColor} p-8 rounded-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl border border-white/10`}
+              className="group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-105"
             >
-              <div className="flex flex-col items-center text-white">
-                <service.icon className="w-12 h-12 mb-4 text-muscle-red" />
-                <h3 className="text-xl font-bold text-center mb-2">
+              <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/90 z-10"></div>
+              <div 
+                className="relative h-[300px] w-full bg-cover bg-center"
+                style={{ backgroundImage: `url(${service.image})` }}
+              >
+                <div className="absolute inset-0 bg-black/50 group-hover:bg-black/70 transition-all duration-300"></div>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white z-20 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                <div className="flex items-center justify-center mb-4">
+                  <service.icon className="w-12 h-12 text-muscle-red" />
+                </div>
+                <h3 className="text-xl font-bold text-center mb-2 group-hover:text-muscle-red transition-colors duration-300">
                   {service.title}
                 </h3>
-                <p className="text-sm text-center text-gray-300">
+                <p className="text-sm text-center text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   {service.description}
                 </p>
               </div>
