@@ -10,6 +10,8 @@ import Footer from "@/components/Footer";
 import GallerySection from "@/components/GallerySection";
 import AIWorkoutSection from "@/components/AIWorkoutSection";
 import BMICalculator from "@/components/BMICalculator";
+import BodyFatCalculator from "@/components/BodyFatCalculator";
+import CalorieCalculator from "@/components/CalorieCalculator";
 
 const Index = () => {
   return (
@@ -19,6 +21,8 @@ const Index = () => {
       <TransformSection />
       <ServicesSection />
       <BMICalculator />
+      <BodyFatCalculator />
+      <CalorieCalculator />
       <GallerySection />
       <AIWorkoutSection />
       <FreeTrialSection />
