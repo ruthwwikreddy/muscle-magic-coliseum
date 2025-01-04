@@ -1,53 +1,59 @@
-import { Dumbbell, Users, Heart, Brain, Activity, Bike } from "lucide-react";
+import { Dumbbell, Users, Heart, Brain, Activity, Bike, Apple, Trophy, Video, UserCircle, Group, Timer, Workflow, Weight, Target, Salad } from "lucide-react";
 
 const services = [
   {
-    title: "Personalized Training Plans",
-    description: "Custom workout plans tailored to your goals and fitness level",
-    icon: Dumbbell,
+    title: "Nutrition Coaching",
+    description: "Personalized nutrition plans and guidance for optimal health",
+    icon: Apple,
     bgColor: "bg-black",
   },
   {
-    title: "Expert Trainers",
-    description: "Work with certified professionals who guide your fitness journey",
-    icon: Users,
+    title: "Sports-Specific Training",
+    description: "Specialized training programs for athletes of all levels",
+    icon: Trophy,
     bgColor: "bg-black/90",
   },
   {
-    title: "State-of-the-Art Equipment",
-    description: "Premium fitness equipment for optimal workout experience",
-    icon: Dumbbell,
+    title: "Online/Virtual Training",
+    description: "Remote training sessions with expert coaches",
+    icon: Video,
     bgColor: "bg-black/80",
   },
   {
-    title: "Nutrition Guidance",
-    description: "Expert advice on diet and nutrition to support your goals",
-    icon: Heart,
+    title: "Personal Training",
+    description: "One-on-one training sessions tailored to your goals",
+    icon: UserCircle,
     bgColor: "bg-black",
   },
   {
-    title: "Flexible Membership Option",
-    description: "Choose from various membership plans that suit your needs",
-    icon: Activity,
+    title: "GROUP FITNESS CLASSES",
+    description: "Energetic group workouts for all fitness levels",
+    icon: Group,
     bgColor: "bg-black/90",
   },
   {
-    title: "Wellness Programs",
-    description: "Comprehensive programs for overall health and well-being",
-    icon: Heart,
+    title: "Cardio Workouts",
+    description: "High-intensity cardio sessions for heart health",
+    icon: Timer,
     bgColor: "bg-black/80",
   },
   {
-    title: "Sustainability Practices",
-    description: "Eco-friendly approach to fitness and wellness",
-    icon: Brain,
+    title: "Functional Training",
+    description: "Practical exercises for everyday strength and mobility",
+    icon: Workflow,
     bgColor: "bg-black",
   },
   {
-    title: "Group Classes for All Levels",
-    description: "Diverse range of group fitness classes for every fitness level",
-    icon: Users,
+    title: "Bodyweight Training",
+    description: "Effective workouts using your own body weight",
+    icon: Weight,
     bgColor: "bg-black/90",
+  },
+  {
+    title: "Specialized Programs",
+    description: "Custom programs for specific fitness goals",
+    icon: Target,
+    bgColor: "bg-black/80",
   },
 ];
 
@@ -67,7 +73,7 @@ const ServicesSection = () => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service, index) => (
             <div
               key={index}
