@@ -1,10 +1,10 @@
-import { Dumbbell, Users, Heart, Activity, Run, Weight, Laptop, Brain } from "lucide-react";
+import { Dumbbell, Users, Heart, Activity, Running, Weight, Laptop, Brain } from "lucide-react";
 
 const services = [
   {
     title: "Sports-Specific Training",
     description: "Specialized training programs tailored for your specific sport performance",
-    icon: Run,
+    icon: Running,
     image: "/lovable-uploads/f3938b12-58fe-4692-9119-459baa4dd348.png",
   },
   {
