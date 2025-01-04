@@ -14,7 +14,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed w-full bg-black/90 backdrop-blur-sm z-50">
+    <nav className="fixed w-full bg-black/80 backdrop-blur-md z-50 shadow-lg transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
@@ -27,12 +27,12 @@ const Navbar = () => {
                 <a
                   key={item.name}
                   href={item.href}
-                  className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-muscle-red after:transition-all after:duration-300 hover:after:w-full"
                 >
                   {item.name}
                 </a>
               ))}
-              <Button className="bg-muscle-red hover:bg-muscle-red/90">
+              <Button className="bg-muscle-red hover:bg-muscle-red/90 transition-colors">
                 Book Free Trial
               </Button>
             </div>
@@ -51,18 +51,22 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="md:hidden">
+        <div className="md:hidden absolute w-full bg-black/95 backdrop-blur-md">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems.map((item) => (
               <a
                 key={item.name}
                 href={item.href}
-                className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+                className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium transition-colors"
+                onClick={() => setIsOpen(false)}
               >
                 {item.name}
               </a>
             ))}
-            <Button className="w-full bg-muscle-red hover:bg-muscle-red/90 mt-4">
+            <Button 
+              className="w-full bg-muscle-red hover:bg-muscle-red/90 transition-colors mt-4"
+              onClick={() => setIsOpen(false)}
+            >
               Book Free Trial
             </Button>
           </div>
