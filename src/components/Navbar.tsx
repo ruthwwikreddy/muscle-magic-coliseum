@@ -14,8 +14,8 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed w-full bg-black/80 backdrop-blur-md z-50 shadow-lg transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl bg-black/80 backdrop-blur-md z-50 shadow-lg transition-all duration-300 rounded-lg">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
             <span className="text-white font-montserrat font-bold text-xl">MUSCLE WORKS</span>
@@ -51,7 +51,7 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="md:hidden absolute w-full bg-black/95 backdrop-blur-md">
+        <div className="md:hidden absolute w-full bg-black/95 backdrop-blur-md rounded-b-lg left-0">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems.map((item) => (
               <a
